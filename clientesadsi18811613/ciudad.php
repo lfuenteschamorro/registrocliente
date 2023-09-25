@@ -31,6 +31,9 @@
             </div>
             <div class="col-5">
                 <br>
+				<form action="funciones2.php" method="post" enctype="multipart/form-data">
+
+				
                 <table width='' border='0' cellspacing='0' cellpadding='1'>
                     <tr bgcolor='#8C0FF0' align='center'>
                     <td><b><font color='#ffffff'>CIUDAD</font></b></td>
@@ -57,6 +60,7 @@
                         </td>
                         </tr>
                         </table>
+					</form>
                     </td>
                     </tr>
                     </table>
@@ -99,31 +103,49 @@ function Administrar_C(Ciudad){
 		}
 		function Agregar_C() {
 			console.log ($("#Imagen_Cliente")[0].files[0]);
-    var parametros = {
-     	"CIUDAD_C": $("#Ciudad_Cliente").val(),
-   		"PAIS_C": $("#Pais_Cliente").val(),
-   		"IMAGEN_C": $("#Imagen_Cliente")[0].files[0],
-		"IDIMAGEN_C":$("#Idimagen_Cliente").val(),
-    	"TIPO":"NUEVO"
-	}
-    $.ajax({
-        type: "POST",
-        url: "./config/funciones2.php",
-        data: parametros,
-        success: function (a) {
-            cargar();
-            alert("El registro fue creado satisfactoriamente.");
-            $("#Ciudad_Cliente").val('');
-            $("#Pais_Cliente").val('');
-            $("#Imagen_Cliente").val('');
-			$("Idimagen_Cliente").val('');
-        },
-        error: function (xhr, textStatus, errorThrown) {
-         console.log (ok);
-			// Manejar errores aquí si es necesario
-        }
-    });
-}
+
+			var fd = new FormData();
+			var ciudad = $("#Ciudad_Cliente").val();
+			var pais = $("#Pais_Cliente").val();
+			var imagen = $('#Imagen_Cliente')[0].files[0];
+			var idImagen = $("#Idimagen_Cliente").val();
+
+			fd.append('CIUDAD_C', ciudad);
+			fd.append('PAIS_C', pais);
+			fd.append('IMAGEN_C', imagen);
+			fd.append('IDIMAGEN_C', idImagen);
+			fd.append('TIPO', "NUEVO");
+
+			var parametros = {
+				"CIUDAD_C": $("#Ciudad_Cliente").val(),
+				"PAIS_C": $("#Pais_Cliente").val(),
+				"IMAGEN_C": $("#Imagen_Cliente")[0].files[0],
+				"IDIMAGEN_C":$("#Idimagen_Cliente").val(),
+				"TIPO":"NUEVO"
+			}
+			$.ajax({
+				type: "POST",
+				url: "./config/funciones2.php",
+				data: fd,
+				success: function (response) {
+					if(response != null){
+						alert("El registro fue creado satisfactoriamente.");
+						$("#Ciudad_Cliente").val('');
+						$("#Pais_Cliente").val('');
+						$("#Imagen_Cliente").val('');
+						$("Idimagen_Cliente").val('');
+					}else{
+						alert("Ocurrio un error al registar .");
+					}
+					cargar();
+					
+				},
+				error: function (xhr, textStatus, errorThrown) {
+				console.log (ok);
+					// Manejar errores aquí si es necesario
+				}
+			});
+		}
 
 function Modificar_C(Ciudad){
 		var parametros = {
